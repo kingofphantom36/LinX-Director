@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
 import { BadgeCheck, Twitter, Instagram, Lock, ChevronRight, X } from 'lucide-react';
+import { track } from '@vercel/analytics';
 
 const TikTokIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -70,7 +71,6 @@ function BentoBlock({
     y.set(0);
   };
 
-  // 6 Second Loop duration
   const totalDuration = 6;
   const startTime = (order * 0.8) / totalDuration;
   const endTime = ((order * 0.8) + 1.2) / totalDuration;
@@ -85,6 +85,9 @@ function BentoBlock({
       <motion.a
         ref={ref}
         href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => track('Bento_Clicked', { block_title: title })}
         style={{ x: springX, y: springY }}
         animate={{ 
           scale: [1, 1, 1.1, 1.1, 1, 1],
@@ -142,6 +145,7 @@ function BentoBlock({
 export default function Home() {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const userBackgroundImage = "/demo.jpg";
+  const logikXUrl = "https://x.com/LogikLinX";
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden font-sans bg-[#020008]">
@@ -170,15 +174,21 @@ export default function Home() {
             <span className="text-[10px] uppercase tracking-wider text-green-400 font-bold">Online Now</span>
           </div>
 
-          <div className="relative w-28 h-28 rounded-full flex items-center justify-center border-2 border-cyan-400/40 shadow-[0_0_30px_rgba(34,211,238,0.15)] overflow-hidden">
-            <img src="/Founder_rat.jpg" alt="Profile" className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
-          </div>
+          <a 
+            href={logikXUrl} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            onClick={() => track('Profile_Photo_Clicked')}
+            className="relative w-28 h-28 rounded-full flex items-center justify-center border-2 border-cyan-400/40 shadow-[0_0_30px_rgba(34,211,238,0.15)] overflow-hidden cursor-pointer group"
+          >
+            <img src="/Founder_rat.jpg" alt="Profile" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+          </a>
           
           <div className="flex flex-col gap-2 items-center">
-            <div className="flex items-center gap-1.5">
+            <a href={logikXUrl} target="_blank" rel="noopener noreferrer" onClick={() => track('Profile_Name_Clicked')} className="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity">
               <h1 className="text-2xl font-bold tracking-tight text-[#E8E8E8]">@TheLogikOS</h1>
               <BadgeCheck className="text-cyan-400" size={20} fill="rgba(34,211,238,0.2)" />
-            </div>
+            </a>
             <div className="bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/5 shadow-2xl">
               <p className="text-sm text-cyan-100/90 font-medium whitespace-nowrap">Your favorite digital obsession 🎀✨</p>
             </div>
@@ -191,7 +201,7 @@ export default function Home() {
             <span className="text-[10px] text-white/80 uppercase tracking-widest font-black">Teasers</span>
           </div>
           <button 
-            onClick={() => setIsGalleryOpen(true)} 
+            onClick={() => { track('Free_Gallery_Header_Clicked'); setIsGalleryOpen(true); }} 
             className="bg-black/40 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/5 flex items-center gap-1 text-[11px] font-bold text-white/80 hover:text-cyan-400 transition-all group shadow-lg"
           >
             Free Gallery <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
@@ -206,7 +216,7 @@ export default function Home() {
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {teaserImages.map((src, i) => (
-            <div key={i} onClick={() => setIsGalleryOpen(true)} className="min-w-[140px] h-28 rounded-2xl overflow-hidden shrink-0 snap-center border border-white/10 relative group cursor-pointer">
+            <div key={i} onClick={() => { track('Teaser_Thumbnail_Clicked', { image_index: i }); setIsGalleryOpen(true); }} className="min-w-[140px] h-28 rounded-2xl overflow-hidden shrink-0 snap-center border border-white/10 relative group cursor-pointer">
               <img src={src} alt={`Teaser ${i}`} className="w-full h-full object-cover opacity-70 blur-md group-hover:blur-sm transition-all duration-500 group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#000718]/90 via-[#000718]/20 to-transparent pointer-events-none flex items-center justify-center">
                 <Lock size={20} className="text-white/40 drop-shadow-md" />
@@ -217,10 +227,10 @@ export default function Home() {
 
         {/* Action Grid */}
         <div className="grid grid-cols-2 gap-3 w-full">
-          <BentoBlock bannerImg="/onlyfans_banner.png" title="Unlock VIP Access 😈" sub="Daily posts & free PPV messages 💦" href="#" colSpan={2} badge="18+" highlight={true} order={0} />
-          <BentoBlock bannerImg="/onlyfans_banner.png" title="FREE Page 🍑" sub="Teasers & updates ✨" href="#" colSpan={2} order={1} />
-          <BentoBlock iconImg="/throne.png" title="Spoil Me 🎁" sub="My Throne Wishlist 🛍️" href="#" colSpan={1} customIconSize="h-10" order={2} />
-          <BentoBlock iconImg="/revolut.png" title="Revolut.me 💳" sub="Direct tributes 💸" href="#" colSpan={1} customIconSize="h-12 brightness-0 invert drop-shadow-[0_0_20px_rgba(255,255,255,1)]" order={3} />
+          <BentoBlock bannerImg="/onlyfans_banner.png" title="Unlock VIP Access 😈" sub="Daily posts & free PPV messages 💦" href={logikXUrl} colSpan={2} badge="18+" highlight={true} order={0} />
+          <BentoBlock bannerImg="/onlyfans_banner.png" title="FREE Page 🍑" sub="Teasers & updates ✨" href={logikXUrl} colSpan={2} order={1} />
+          <BentoBlock iconImg="/throne.png" title="Spoil Me 🎁" sub="My Throne Wishlist 🛍️" href={logikXUrl} colSpan={1} customIconSize="h-10" order={2} />
+          <BentoBlock iconImg="/revolut.png" title="Revolut.me 💳" sub="Direct tributes 💸" href={logikXUrl} colSpan={1} customIconSize="h-12 brightness-0 invert drop-shadow-[0_0_20px_rgba(255,255,255,1)]" order={3} />
         </div>
       </div>
 
@@ -250,28 +260,30 @@ export default function Home() {
           }}
           className="flex gap-6 px-8 py-4 rounded-full bg-[#000718]/70 backdrop-blur-2xl border border-white/10 pointer-events-auto shadow-2xl"
         >
-          <a href="#" className="text-white/60 hover:text-cyan-400 hover:scale-110 transition-all"><Twitter size={22} /></a>
-          <a href="#" className="text-white/60 hover:text-cyan-400 hover:scale-110 transition-all"><Instagram size={22} /></a>
-          <a href="#" className="text-white/60 hover:text-cyan-400 hover:scale-110 transition-all"><TikTokIcon /></a>
-          <a href="#" className="text-white/60 hover:text-cyan-400 hover:scale-110 transition-all"><SnapchatIcon /></a>
+          <a href={logikXUrl} target="_blank" rel="noopener noreferrer" onClick={() => track('Social_Icon_Clicked', { platform: 'Twitter' })} className="text-white/60 hover:text-cyan-400 hover:scale-110 transition-all"><Twitter size={22} /></a>
+          <a href={logikXUrl} target="_blank" rel="noopener noreferrer" onClick={() => track('Social_Icon_Clicked', { platform: 'Instagram' })} className="text-white/60 hover:text-cyan-400 hover:scale-110 transition-all"><Instagram size={22} /></a>
+          <a href={logikXUrl} target="_blank" rel="noopener noreferrer" onClick={() => track('Social_Icon_Clicked', { platform: 'TikTok' })} className="text-white/60 hover:text-cyan-400 hover:scale-110 transition-all"><TikTokIcon /></a>
+          <a href={logikXUrl} target="_blank" rel="noopener noreferrer" onClick={() => track('Social_Icon_Clicked', { platform: 'Snapchat' })} className="text-white/60 hover:text-cyan-400 hover:scale-110 transition-all"><SnapchatIcon /></a>
         </motion.div>
       </motion.div>
 
       {/* Billionaire Signature */}
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }} className="fixed bottom-4 left-0 right-0 z-20 flex flex-col items-center gap-1 select-none pointer-events-none">
-        <span style={{ fontFamily: '"Courier New", Courier, monospace', fontSize: '9px', letterSpacing: '0.12em', color: '#E8E8E8' }}>3-6-9</span>
-        <span style={{ fontFamily: '"Courier New", Courier, monospace', fontSize: '9px', letterSpacing: '0.12em', color: '#E8E8E8' }}>Powered by LogikOS v1.0</span>
+        <span style={{ fontFamily: '"Courier New", Courier, monospace', fontSize: '9px', letterSpacing: '0.12em', color: '#E8E8E8' }}>Powered by Logik Core v1.0 - VR-36 Engine</span>
+        <span style={{ fontFamily: '"Courier New", Courier, monospace', fontSize: '9px', letterSpacing: '0.12em', color: '#E8E8E8' }}>3-6-9 Teslain Code</span>
       </motion.div>
 
       <AnimatePresence>
         {isGalleryOpen && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
             <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="relative w-full max-w-sm bg-[#000718] border border-cyan-500/30 rounded-3xl p-6 shadow-2xl">
-              <button onClick={() => setIsGalleryOpen(false)} className="absolute top-4 right-4 text-white/50 hover:text-cyan-400 bg-white/5 rounded-full p-1.5 transition-colors"><X size={18} /></button>
+              <button onClick={() => { track('Close_Gallery_Clicked'); setIsGalleryOpen(false); }} className="absolute top-4 right-4 text-white/50 hover:text-cyan-400 bg-white/5 rounded-full p-1.5 transition-colors"><X size={18} /></button>
               <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">Free Gallery <img src="/onlyfans_icon.png" alt="OF" className="w-5 h-5 object-contain" /></h2>
               <div className="grid grid-cols-2 gap-3 overflow-y-auto max-h-[60vh] pr-1 [&::-webkit-scrollbar]:hidden">
                 {modalGalleryImages.map((src, i) => (
-                  <img key={i} src={src} alt={`Gallery ${i}`} className="w-full aspect-square object-cover rounded-xl border border-white/10 hover:border-cyan-400/50 hover:scale-[1.02] transition-all duration-300" />
+                  <a key={i} href={logikXUrl} target="_blank" rel="noopener noreferrer" onClick={() => track('Gallery_Image_Clicked', { image_index: i })}>
+                    <img src={src} alt={`Gallery ${i}`} className="w-full aspect-square object-cover rounded-xl border border-white/10 hover:border-cyan-400/50 hover:scale-[1.02] transition-all duration-300" />
+                  </a>
                 ))}
               </div>
             </motion.div>
