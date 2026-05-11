@@ -1,69 +1,77 @@
-import { useState, useRef } from 'react';
-import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
-import { BadgeCheck, Twitter, Instagram, Lock, ChevronRight, X } from 'lucide-react';
+import { useRef, useEffect, useState } from 'react';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { Instagram, Rocket, Home as HomeIcon, CreditCard, MessageCircle } from 'lucide-react';
 import { track } from '@vercel/analytics';
 
-const TikTokIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.1z" />
+const XIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 22.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
   </svg>
 );
 
-const SnapchatIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-    <path d="M12.1 2.21c-2.4-.07-4.59 1.19-5.63 3.37-.42.86-.54 1.84-.46 2.81.08 1.01.27 2 .54 2.98.08.3-.18.61-.49.52a6.38 6.38 0 0 1-1.46-.66c-.46-.3-.98-.22-1.35.15-.35.35-.41.9-.13 1.31.53.76 1.3 1.34 2.18 1.63.48.16.59.8.18 1.13-.5.4-1.07.72-1.68.95-.5.18-.7.8-.35 1.19.86.96 2 1.65 3.25 1.95 1.25.3 2.53.25 3.75-.1a6.11 6.11 0 0 0 .5-.15c.34-.14.73.08.74.45.02.5.15.98.37 1.41.28.55.84.86 1.46.86s1.18-.31 1.46-.86c.22-.43.35-.91.37-1.41.01-.37.4-.59.74-.45.17.06.33.11.5.15 1.22.35 2.5.4 3.75.1 1.25-.3 2.39-.99 3.25-1.95.35-.39.15-1.01-.35-1.19a8.03 8.03 0 0 1-1.68-.95c-.41-.33-.3-.97.18-1.13.88-.29 1.65-.87 2.18-1.63.28-.41.22-.96-.13-1.31-.37-.37-.89-.45-1.35-.15a6.38 6.38 0 0 1-1.46.66c-.31.09-.57-.22-.49-.52.27-.98.46-1.97.54-2.98.08-.97-.04-1.95-.46-2.81-1.04-2.18-3.23-3.44-5.63-3.37z" />
-  </svg>
-);
+// PURE HARDCODED MATRIX RAIN ENGINE (Custom Message Inside)
+const MatrixRain = () => {
+  const chars = "stop wasting time kurt lets get to fucking work 01VORSprungテックOS369".split("");
+  const columns = 15; // Optimized for mobile density
 
-const teaserImages = [
-  'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=600&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=600&auto=format&fit=crop',
-];
-
-const modalGalleryImages = [
-  'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=600&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=600&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=600&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?q=80&w=600&auto=format&fit=crop',
-];
+  return (
+    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-black flex justify-around">
+      {[...Array(columns)].map((_, i) => {
+        const speed = Math.random() * 4 + 2;
+        const delay = Math.random() * 5;
+        return (
+          <motion.div
+            key={i}
+            initial={{ y: "-100%" }}
+            animate={{ y: "100%" }}
+            transition={{ duration: speed, repeat: Infinity, ease: "linear", delay: -delay }}
+            className="flex flex-col text-[12px] leading-none select-none"
+            style={{ fontFamily: "monospace", color: "#5CE0E6", opacity: 0.15, textShadow: "0 0 8px #5CE0E6" }}
+          >
+            {[...Array(40)].map((_, j) => (
+              <span key={j} className="my-1">
+                {chars[Math.floor(Math.random() * chars.length)]}
+              </span>
+            ))}
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+};
 
 function BentoBlock({
-  iconImg,
-  bannerImg,
+  Icon,
   title,
   sub,
   href,
   colSpan = 1,
   badge,
   highlight = false,
-  customIconSize = "h-5",
-  order // 0, 1, 2, 3
+  order 
 }: {
-  iconImg?: string;
-  bannerImg?: string;
+  Icon?: React.ElementType;
   title: string;
   sub: string;
   href: string;
   colSpan?: number;
   badge?: string;
   highlight?: boolean;
-  customIconSize?: string;
   order: number;
 }) {
   const ref = useRef<HTMLAnchorElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const springX = useSpring(x, { stiffness: 300, damping: 20 });
-  const springY = useSpring(y, { stiffness: 300, damping: 20 });
+  const springX = useSpring(x, { stiffness: 300, damping: 25 });
+  const springY = useSpring(y, { stiffness: 300, damping: 25 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     const rect = ref.current?.getBoundingClientRect();
     if (!rect) return;
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
-    x.set((e.clientX - cx) * 0.1);
-    y.set((e.clientY - cy) * 0.1);
+    x.set((e.clientX - cx) * 0.05);
+    y.set((e.clientY - cy) * 0.05);
   };
 
   const handleMouseLeave = () => {
@@ -71,69 +79,43 @@ function BentoBlock({
     y.set(0);
   };
 
-  const totalDuration = 6;
-  const startTime = (order * 0.8) / totalDuration;
-  const endTime = ((order * 0.8) + 1.2) / totalDuration;
-
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: order * 0.1, duration: 0.5 }}
-      className={`relative ${colSpan === 2 ? 'col-span-2' : 'col-span-1'}`}
+      className={`${colSpan === 2 ? 'col-span-2' : 'col-span-1'}`}
     >
       <motion.a
         ref={ref}
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        onClick={() => track('Bento_Clicked', { block_title: title })}
         style={{ x: springX, y: springY }}
         animate={{ 
-          scale: [1, 1, 1.1, 1.1, 1, 1],
-          zIndex: [1, 1, 30, 30, 1, 1],
           borderColor: highlight 
-            ? ['rgba(34, 211, 238, 0.4)', 'rgba(34, 211, 238, 0.4)', 'rgba(34, 211, 238, 1)', 'rgba(34, 211, 238, 1)', 'rgba(34, 211, 238, 0.4)', 'rgba(34, 211, 238, 0.4)']
-            : ['rgba(255, 255, 255, 0.1)', 'rgba(255, 255, 255, 0.1)', 'rgba(34, 211, 238, 1)', 'rgba(34, 211, 238, 1)', 'rgba(255, 255, 255, 0.1)', 'rgba(255, 255, 255, 0.1)'],
-          boxShadow: highlight
-            ? ['0px 0px 15px rgba(34,211,238,0.2)', '0px 0px 15px rgba(34,211,238,0.2)', '0px 0px 60px rgba(34,211,238,0.9)', '0px 0px 60px rgba(34,211,238,0.9)', '0px 0px 15px rgba(34,211,238,0.2)', '0px 0px 15px rgba(34,211,238,0.2)']
-            : ['0px 0px 0px rgba(34,211,238,0)', '0px 0px 0px rgba(34,211,238,0)', '0px 0px 60px rgba(34,211,238,0.9)', '0px 0px 60px rgba(34,211,238,0.9)', '0px 0px 0px rgba(34,211,238,0)', '0px 0px 0px rgba(34,211,238,0)']
+            ? ['rgba(92, 224, 230, 0.3)', 'rgba(92, 224, 230, 0.8)', 'rgba(92, 224, 230, 0.3)']
+            : ['rgba(255, 255, 255, 0.05)', 'rgba(92, 224, 230, 0.4)', 'rgba(255, 255, 255, 0.05)'],
         }}
-        transition={{ 
-          duration: totalDuration,
-          repeat: Infinity,
-          ease: "easeInOut",
-          times: [0, startTime, startTime + 0.05, endTime - 0.05, endTime, 1]
-        }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className={`group flex flex-col justify-between p-5 rounded-3xl cursor-pointer select-none h-full w-full
-          ${highlight ? 'bg-[#000718]/80' : 'bg-[#000718]/40'} 
-          backdrop-blur-md border transition-colors duration-300 overflow-hidden aspect-auto min-h-[120px]`}
+        className="group relative flex flex-col justify-between p-5 rounded-[24px] cursor-pointer bg-black border-[1px] transition-all duration-300 overflow-hidden min-h-[125px] active:scale-95"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
-        
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/[0.03] to-transparent pointer-events-none" />
         <div className="flex justify-between items-start mb-4 relative z-10">
-          {bannerImg ? (
-            <img src={bannerImg} alt="Banner" className="h-5 object-contain drop-shadow-[0_2px_8px_rgba(0,175,240,0.4)]" />
-          ) : (
-            iconImg && (
-              <img src={iconImg} alt="Icon" className={`${customIconSize} object-contain`} />
-            )
-          )}
-          
+          {Icon && <Icon className="text-cyan-400 w-7 h-7 group-hover:scale-110 transition-transform" />}
           {badge && (
-            <span className="absolute right-0 top-0 px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-white bg-red-500/80 rounded-full border border-red-400/50 shadow-[0_0_10px_rgba(239,68,68,0.5)]">
+            <span className="px-2 py-0.5 text-[8px] font-black uppercase text-white bg-red-600 rounded-full animate-pulse shadow-[0_0_12px_rgba(239,68,68,0.5)]">
               {badge}
             </span>
           )}
         </div>
-
         <div className="flex flex-col gap-1 z-10">
-          <span className="text-sm font-bold tracking-wide text-white/90 group-hover:text-white transition-colors">
+          <span className="text-[13px] font-black tracking-widest text-white group-hover:text-cyan-400 transition-colors uppercase">
             {title}
           </span>
-          <span className="text-[11px] text-white/50 group-hover:text-cyan-100/70 tracking-wide transition-colors">
+          <span className="text-[10px] text-white/50 leading-tight">
             {sub}
           </span>
         </div>
@@ -143,153 +125,97 @@ function BentoBlock({
 }
 
 export default function Home() {
-  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-  const userBackgroundImage = "/demo.jpg";
-  const logikXUrl = "https://x.com/LogikLinX";
+  const xUrl = "https://x.com/TheLogikOS";
+  const instaUrl = "https://www.instagram.com/vorsprung.tech/";
+  const whatsappUrl = "https://wa.me/447787206918"; 
+  const stripeUrl = "https://buy.stripe.com/5kQ6oI8IMeVA8Rs1NY2Fa0d?client_reference_id=kurt_cowley";
+  const tradeDemoUrl = "https://aintthatcleanltd.co.uk";
+  const holidayDemoUrl = "https://leloftbelesta.eu/tourdefrance";
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden font-sans bg-[#020008]">
-      {/* Visual Background Engine */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-black">
-        <motion.div
-          animate={{ scale: [1, 1.05, 1], rotate: [0, 1, 0] }}
-          transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute inset-0 bg-cover bg-center opacity-100"
-          style={{ backgroundImage: `url(${userBackgroundImage})` }}
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-start overflow-x-hidden font-sans bg-black text-white selection:bg-cyan-500/30">
+      
+      <MatrixRain />
+      
+      {/* --- THE INTENSE GLOWING TOP BANNER --- */}
+      {/* Rebuilt as a showcased reactor core piece behind the HUD */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="absolute top-0 left-0 w-full z-0 flex justify-center pt-5 overflow-hidden touch-none"
+      >
+        <motion.img 
+          src="/vorsprungtech.png" // using the wide logo as requested
+          alt="Vorsprung Tech Authority" 
+          className="w-full h-auto max-h-[170px] object-contain opacity-100 px-4" 
+          // Stacked drop-shadow filters create the deep neon glow core
+          // Animated to throb/pulse like a powering-on system
+          animate={{
+            filter: [
+              'drop-shadow(0 0 12px #5CE0E6) drop-shadow(0 0 25px rgba(92,224,230,0.8)) drop-shadow(0 0 45px rgba(92,224,230,0.5))', // Base
+              'drop-shadow(0 0 18px #5CE0E6) drop-shadow(0 0 40px rgba(92,224,230,1)) drop-shadow(0 0 70px rgba(92,224,230,0.7))', // High Pulse
+              'drop-shadow(0 0 12px #5CE0E6) drop-shadow(0 0 25px rgba(92,224,230,0.8)) drop-shadow(0 0 45px rgba(92,224,230,0.5))'  // Base
+            ]
+          }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         />
-        <div className="absolute inset-0 bg-black/40" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/90" />
-      </div>
+      </motion.div>
+      {/* ===================================== */}
+      
+      {/* Background Gradient Overlay */}
+      <div className="fixed inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none z-0" />
 
-      <div className="relative z-10 w-full max-w-sm mx-auto px-4 pb-32 pt-12 flex flex-col gap-6">
-        {/* Header HUD */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="flex flex-col items-center text-center gap-4"
-        >
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 backdrop-blur-md mb-2">
-            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]" />
-            <span className="text-[10px] uppercase tracking-wider text-green-400 font-bold">Online Now</span>
-          </div>
-
-          <a 
-            href={logikXUrl} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            onClick={() => track('Profile_Photo_Clicked')}
-            className="relative w-28 h-28 rounded-full flex items-center justify-center border-2 border-cyan-400/40 shadow-[0_0_30px_rgba(34,211,238,0.15)] overflow-hidden cursor-pointer group"
-          >
-            <img src="/Founder_rat.jpg" alt="Profile" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-          </a>
+      <div className="relative z-10 w-full max-w-sm mx-auto px-5 pb-24 pt-10 flex flex-col gap-6">
+        
+        {/* Identity HUD */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="flex flex-col items-center text-center mt-12">
           
-          <div className="flex flex-col gap-2 items-center">
-            <a href={logikXUrl} target="_blank" rel="noopener noreferrer" onClick={() => track('Profile_Name_Clicked')} className="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity">
-              <h1 className="text-2xl font-bold tracking-tight text-[#E8E8E8]">@TheLogikOS</h1>
-              <BadgeCheck className="text-cyan-400" size={20} fill="rgba(34,211,238,0.2)" />
-            </a>
-            <div className="bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/5 shadow-2xl">
-              <p className="text-sm text-cyan-100/90 font-medium whitespace-nowrap">Your favorite digital obsession 🎀✨</p>
+          {/* Profile Circle */}
+          <div className="relative w-28 h-28 rounded-full border-2 border-cyan-400/20 overflow-hidden shadow-[0_0_50px_rgba(92,224,230,0.2)] mb-5">
+            <img src="/Founder_rat.jpg" alt="Kurt Cowley" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-cyan-400/5 mix-blend-overlay" />
+          </div>
+          
+          {/* Name & Role */}
+          <div className="flex flex-col items-center gap-3">
+            <h1 className="text-3xl font-black tracking-tighter text-white drop-shadow-lg">KURT COWLEY</h1>
+            
+            <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/5 border border-cyan-500/20 backdrop-blur-md shadow-[0_0_15px_rgba(92,224,230,0.15)]">
+              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#5CE0E6]" />
+              <span className="text-[9px] uppercase tracking-[0.2em] text-cyan-300 font-black">Director of Acquisitions</span>
             </div>
           </div>
         </motion.div>
 
-        {/* Gallery Section Header Pills */}
-        <div className="flex justify-between items-end w-full px-2 mb-[-12px] z-10">
-          <div className="bg-black/40 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/5 shadow-lg">
-            <span className="text-[10px] text-white/80 uppercase tracking-widest font-black">Teasers</span>
-          </div>
-          <button 
-            onClick={() => { track('Free_Gallery_Header_Clicked'); setIsGalleryOpen(true); }} 
-            className="bg-black/40 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/5 flex items-center gap-1 text-[11px] font-bold text-white/80 hover:text-cyan-400 transition-all group shadow-lg"
-          >
-            Free Gallery <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
-          </button>
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          className="w-full flex overflow-x-auto gap-3 pb-2 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {teaserImages.map((src, i) => (
-            <div key={i} onClick={() => { track('Teaser_Thumbnail_Clicked', { image_index: i }); setIsGalleryOpen(true); }} className="min-w-[140px] h-28 rounded-2xl overflow-hidden shrink-0 snap-center border border-white/10 relative group cursor-pointer">
-              <img src={src} alt={`Teaser ${i}`} className="w-full h-full object-cover opacity-70 blur-md group-hover:blur-sm transition-all duration-500 group-hover:scale-110" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#000718]/90 via-[#000718]/20 to-transparent pointer-events-none flex items-center justify-center">
-                <Lock size={20} className="text-white/40 drop-shadow-md" />
-              </div>
-            </div>
-          ))}
+        {/* Waitlist Alert (Mobile Centered) */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="w-full flex justify-center mb-[-5px]">
+          <span className="px-5 py-2 text-[9px] font-black uppercase tracking-[0.3em] text-red-500 bg-black border border-red-500/30 rounded-full shadow-[0_0_20px_rgba(239,68,68,0.2)] animate-pulse">
+            DEPLOYMENT WAITLIST: 7 DAYS
+          </span>
         </motion.div>
 
         {/* Action Grid */}
         <div className="grid grid-cols-2 gap-3 w-full">
-          <BentoBlock bannerImg="/onlyfans_banner.png" title="Unlock VIP Access 😈" sub="Daily posts & free PPV messages 💦" href={logikXUrl} colSpan={2} badge="18+" highlight={true} order={0} />
-          <BentoBlock bannerImg="/onlyfans_banner.png" title="FREE Page 🍑" sub="Teasers & updates ✨" href={logikXUrl} colSpan={2} order={1} />
-          <BentoBlock iconImg="/throne.png" title="Spoil Me 🎁" sub="My Throne Wishlist 🛍️" href={logikXUrl} colSpan={1} customIconSize="h-10" order={2} />
-          <BentoBlock iconImg="/revolut.png" title="Revolut.me 💳" sub="Direct tributes 💸" href={logikXUrl} colSpan={1} customIconSize="h-12 brightness-0 invert drop-shadow-[0_0_20px_rgba(255,255,255,1)]" order={3} />
+          <BentoBlock Icon={Rocket} title="Trade System" sub="Ain't That Clean Demo. Automated Office." href={tradeDemoUrl} colSpan={2} highlight={true} order={0} />
+          <BentoBlock Icon={HomeIcon} title="Holiday System" sub="Le Loft Demo. Avoid 20% Airbnb fees." href={holidayDemoUrl} colSpan={2} order={1} />
+          <BentoBlock Icon={CreditCard} title="Deploy Now" sub="Secure £486 Deposit" href={stripeUrl} colSpan={1} badge="WAITLIST" order={2} />
+          <BentoBlock Icon={MessageCircle} title="Direct Comms" sub="WhatsApp The Operator" href={whatsappUrl} colSpan={1} order={3} />
         </div>
       </div>
 
-      {/* Social Dock Waterfall */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.6 }}
-        className="fixed bottom-16 z-20 flex justify-center w-full pointer-events-none"
-      >
-        <motion.div
-          animate={{ 
-            scale: [1, 1, 1.12, 1.12, 1, 1],
-            boxShadow: [
-              '0px 10px 30px rgba(0,0,0,0.8)', 
-              '0px 10px 30px rgba(0,0,0,0.8)',
-              '0px 0px 40px rgba(34,211,238,0.9), inset 0px 0px 15px rgba(34,211,238,0.5)', 
-              '0px 0px 40px rgba(34,211,238,0.9), inset 0px 0px 15px rgba(34,211,238,0.5)',
-              '0px 10px 30px rgba(0,0,0,0.8)',
-              '0px 10px 30px rgba(0,0,0,0.8)'
-            ],
-            borderColor: ['rgba(255,255,255,0.1)', 'rgba(255,255,255,0.1)', 'rgba(34,211,238,1)', 'rgba(34,211,238,1)', 'rgba(255,255,255,0.1)', 'rgba(255,255,255,0.1)']
-          }}
-          transition={{ 
-            duration: 6, repeat: Infinity, ease: "easeInOut",
-            times: [0, (4 * 0.8 / 6), (4 * 0.8 / 6) + 0.05, ((4 * 0.8) + 1.2) / 6 - 0.05, ((4 * 0.8) + 1.2) / 6, 1]
-          }}
-          className="flex gap-6 px-8 py-4 rounded-full bg-[#000718]/70 backdrop-blur-2xl border border-white/10 pointer-events-auto shadow-2xl"
-        >
-          <a href={logikXUrl} target="_blank" rel="noopener noreferrer" onClick={() => track('Social_Icon_Clicked', { platform: 'Twitter' })} className="text-white/60 hover:text-cyan-400 hover:scale-110 transition-all"><Twitter size={22} /></a>
-          <a href={logikXUrl} target="_blank" rel="noopener noreferrer" onClick={() => track('Social_Icon_Clicked', { platform: 'Instagram' })} className="text-white/60 hover:text-cyan-400 hover:scale-110 transition-all"><Instagram size={22} /></a>
-          <a href={logikXUrl} target="_blank" rel="noopener noreferrer" onClick={() => track('Social_Icon_Clicked', { platform: 'TikTok' })} className="text-white/60 hover:text-cyan-400 hover:scale-110 transition-all"><TikTokIcon /></a>
-          <a href={logikXUrl} target="_blank" rel="noopener noreferrer" onClick={() => track('Social_Icon_Clicked', { platform: 'Snapchat' })} className="text-white/60 hover:text-cyan-400 hover:scale-110 transition-all"><SnapchatIcon /></a>
-        </motion.div>
+      {/* Floating Social Dock */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} className="fixed bottom-12 z-20 flex justify-center gap-14 w-full pointer-events-auto">
+          <a href={xUrl} target="_blank" rel="noopener noreferrer" className="text-white/30 hover:text-cyan-400 hover:scale-125 transition-all active:scale-90"><XIcon /></a>
+          <a href={instaUrl} target="_blank" rel="noopener noreferrer" className="text-white/30 hover:text-cyan-400 hover:scale-125 transition-all active:scale-90"><Instagram size={26} /></a>
       </motion.div>
 
-      {/* Billionaire Signature */}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }} className="fixed bottom-4 left-0 right-0 z-20 flex flex-col items-center gap-1 select-none pointer-events-none">
-        <span style={{ fontFamily: '"Courier New", Courier, monospace', fontSize: '9px', letterSpacing: '0.12em', color: '#E8E8E8' }}>Powered by Logik Core v1.0 - VR-36 Engine</span>
-        <span style={{ fontFamily: '"Courier New", Courier, monospace', fontSize: '9px', letterSpacing: '0.12em', color: '#E8E8E8' }}>3-6-9 Teslain Code</span>
+      {/* Signature Footer */}
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }} className="fixed bottom-4 left-0 right-0 z-20 flex flex-col items-center gap-0.5 opacity-30 pointer-events-none">
+        <span style={{ fontFamily: 'monospace', fontSize: '8px', letterSpacing: '0.25em' }}>POWERED BY LogikOS</span>
+        <span style={{ fontFamily: 'monospace', fontSize: '8px', letterSpacing: '0.25em' }}>3-6-9</span>
       </motion.div>
 
-      <AnimatePresence>
-        {isGalleryOpen && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="relative w-full max-w-sm bg-[#000718] border border-cyan-500/30 rounded-3xl p-6 shadow-2xl">
-              <button onClick={() => { track('Close_Gallery_Clicked'); setIsGalleryOpen(false); }} className="absolute top-4 right-4 text-white/50 hover:text-cyan-400 bg-white/5 rounded-full p-1.5 transition-colors"><X size={18} /></button>
-              <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">Free Gallery <img src="/onlyfans_icon.png" alt="OF" className="w-5 h-5 object-contain" /></h2>
-              <div className="grid grid-cols-2 gap-3 overflow-y-auto max-h-[60vh] pr-1 [&::-webkit-scrollbar]:hidden">
-                {modalGalleryImages.map((src, i) => (
-                  <a key={i} href={logikXUrl} target="_blank" rel="noopener noreferrer" onClick={() => track('Gallery_Image_Clicked', { image_index: i })}>
-                    <img src={src} alt={`Gallery ${i}`} className="w-full aspect-square object-cover rounded-xl border border-white/10 hover:border-cyan-400/50 hover:scale-[1.02] transition-all duration-300" />
-                  </a>
-                ))}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
