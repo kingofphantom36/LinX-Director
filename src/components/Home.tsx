@@ -163,7 +163,8 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   
   const whatsappUrl = "https://wa.me/447787206918"; 
-  const stripeUrl = "https://buy.stripe.com/5kQ6oI8IMeVA8Rs1NY2Fa0d"; 
+  // 🔴 UPDATED TO THE NEW £81 WAITLIST PROTOCOL LINK
+  const stripeUrl = "https://buy.stripe.com/3cIfZi4sw3cS9VwcsC2Fa0e"; 
 
   return (
     <div className="relative h-[100dvh] w-full flex flex-col items-center justify-between overflow-hidden bg-black text-white p-4">
@@ -244,8 +245,8 @@ export default function Home() {
           <BentoBlock Icon={Scissors} title="Adored Beauty" sub="adoredbeauty.co.uk" href="https://adoredbeauty.co.uk" colSpan={1} order={2} />
           <BentoBlock Icon={Layers} title="All Demos" sub="View Network." onClick={() => setIsModalOpen(true)} colSpan={1} highlight={true} order={3} />
           
-          {/* Row 3 */}
-          <BentoBlock Icon={CreditCard} title="Deploy" sub="Secure £486 Dep." href={stripeUrl} colSpan={1} badge="WAITLIST" order={4} />
+          {/* Row 3 - UPDATED TEXT TO MATCH £81 DEPLOYMENT */}
+          <BentoBlock Icon={CreditCard} title="Deploy" sub="Secure £81 Slot." href={stripeUrl} colSpan={1} badge="WAITLIST" order={4} />
           <BentoBlock Icon={MessageCircle} title="Comms" sub="Encrypted Line." href={whatsappUrl} colSpan={1} order={5} />
         </div>
       </div>
