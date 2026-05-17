@@ -116,6 +116,7 @@ const DemosModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void 
     { name: "Le Loft Belesta", category: "Holiday", url: "https://leloftbelesta.eu/tourdefrance" },
     { name: "Salon OS", category: "Salon", url: "https://www.lfg369.co.uk/demos/salon" },
     { name: "Auto Detail OS", category: "Automotive", url: "https://www.lfg369.co.uk/demos/auto-detail" },
+    { name: "Adored Beauty", category: "Salon", url: "https://adoredbeauty.co.uk" },
     { name: "EV Electrical OS", category: "Trade", url: "https://www.lfg369.co.uk/demos/ev-electrical" },
     { name: "Plumbing OS", category: "Trade", url: "https://www.lfg369.co.uk/demos/plumbing" },
   ];
@@ -242,11 +243,11 @@ export default function Home() {
           <BentoBlock Icon={HomeIcon} title="Holiday" sub="Le Loft Demo." href="https://leloftbelesta.eu/tourdefrance" colSpan={1} order={1} />
           
           {/* Row 2 - ADORED BEAUTY NOW LIVE */}
-          <BentoBlock Icon={Scissors} title="Adored Beauty" sub="adoredbeauty.co.uk" href="https://adoredbeauty.co.uk" colSpan={1} order={2} />
+          <BentoBlock Icon={Scissors} title="Interactive Demo" sub="ALS Collective." href="https://alscollective.vorsprungtech.co.uk" colSpan={1} order={2} />
           <BentoBlock Icon={Layers} title="All Demos" sub="View Network." onClick={() => setIsModalOpen(true)} colSpan={1} highlight={true} order={3} />
           
           {/* Row 3 - UPDATED TEXT TO MATCH £81 DEPLOYMENT */}
-          <BentoBlock Icon={CreditCard} title="Deploy" sub="Secure £81 Slot." href={stripeUrl} colSpan={1} badge="WAITLIST" order={4} />
+          <BentoBlock Icon={CreditCard} title="Deploy" sub="Next Slot: 4 Weeks" href={stripeUrl} colSpan={1} order={4} />
           <BentoBlock Icon={MessageCircle} title="Comms" sub="Encrypted Line." href={whatsappUrl} colSpan={1} order={5} />
         </div>
       </div>
